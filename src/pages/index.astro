@@ -51,22 +51,26 @@ const author = {
       <h2 class="section-title">Featured Articles</h2>
       <div class="featured-posts">
         {featuredPosts.map(post => (
-            <a href={`/blog/${post.slug}`} class="featured-card-link">
-              <article class="featured-card">
-                <div class="featured-image">
-                  <img src={...} alt={...} />
+          <a href={`/blog/${post.slug}`} class="featured-card-link">
+            <article class="featured-card">
+              <div class="featured-image">
+                <img 
+                  src={post.data.image || '/images/placeholder.jpg'} 
+                  alt={post.data.title}
+                  onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 200%22%3E%3Crect fill=%22%23E8F2F8%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2248%22%3E📝%3C/text%3E%3C/svg%3E'"
+                />
+              </div>
+              <div class="featured-content">
+                <span class="featured-category">{post.data.category}</span>
+                <h3>{post.data.title}</h3>
+                <p>{post.data.description}</p>
+                <div class="featured-meta">
+                  <span>{post.data.pubDate.toLocaleDateString()}</span>
+                  <span class="read-more">Read →</span>
                 </div>
-                <div class="featured-content">
-                  <span class="featured-category">{post.data.category}</span>
-                  <h3>{post.data.title}</h3>
-                  <p>{post.data.description}</p>
-                  <div class="featured-meta">
-                    <span>{post.data.pubDate.toLocaleDateString()}</span>
-                    <span class="read-more">Read →</span>
-                  </div>
-                </div>
-              </article>
-            </a>
+              </div>
+            </article>
+          </a>
         ))}
       </div>
 
@@ -75,12 +79,14 @@ const author = {
         <h2 class="section-title">Browse by Category</h2>
         <div class="category-grid">
           {categories.map(cat => (
-            <div class="category-card">
-              <div class="category-icon">{cat.icon}</div>
-              <h3>{cat.name}</h3>
-              <p>{cat.description}</p>
-              <a href={`/blog/${cat.name.toLowerCase()}`} class="category-btn">Explore {cat.name}</a>
-            </div>
+            <a href={`/blog/${cat.name.toLowerCase()}`} class="category-card-link">
+              <div class="category-card">
+                <div class="category-icon">{cat.icon}</div>
+                <h3>{cat.name}</h3>
+                <p>{cat.description}</p>
+                <span class="category-btn-text">Explore {cat.name}</span>
+              </div>
+            </a>
           ))}
         </div>
       </section>
@@ -90,12 +96,14 @@ const author = {
         <h2 class="section-title">Popular Articles</h2>
         <div class="popular-grid">
           {featuredPosts.map(post => (
-            <div class="popular-item">
-              <span class="popular-badge">Featured</span>
-              <h4>{post.data.title}</h4>
-              <p>{post.data.description}</p>
-              <a href={`/blog/${post.slug}`} class="popular-link">Read Article →</a>
-            </div>
+            <a href={`/blog/${post.slug}`} class="popular-item-link">
+              <div class="popular-item">
+                <span class="popular-badge">Featured</span>
+                <h4>{post.data.title}</h4>
+                <p>{post.data.description}</p>
+                <span class="popular-link">Read Article →</span>
+              </div>
+            </a>
           ))}
         </div>
       </section>
@@ -232,16 +240,24 @@ const author = {
       margin-bottom: 3rem;
     }
 
+    .featured-card-link {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: all 0.3s ease;
+    }
+
     .featured-card {
       background: white;
       border-radius: 8px;
       overflow: hidden;
       border: 1px solid #e0e0e0;
       transition: all 0.3s ease;
+      cursor: pointer;
     }
 
-    .featured-card:hover {
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    .featured-card-link:hover .featured-card {
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
       transform: translateY(-4px);
     }
 
@@ -252,26 +268,15 @@ const author = {
       background: #f0f0f0;
     }
 
-.featured-card-link {
-  text-decoration: none;
-  color: inherit;
-  display: block;
-}
-
-.featured-card {
-  cursor: pointer;
-}
-
-.featured-card-link:hover .featured-card {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-}
-
-
     .featured-image img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      transition: transform 0.3s;
+    }
+
+    .featured-card-link:hover .featured-image img {
+      transform: scale(1.05);
     }
 
     .featured-content {
@@ -286,6 +291,7 @@ const author = {
       border-radius: 20px;
       font-size: 0.85rem;
       margin-bottom: 0.75rem;
+      font-weight: 600;
     }
 
     .featured-card h3 {
@@ -319,10 +325,6 @@ const author = {
       font-weight: 500;
     }
 
-    .read-more:hover {
-      text-decoration: underline;
-    }
-
     /* CATEGORY SECTION */
     .category-section {
       margin-bottom: 3rem;
@@ -334,6 +336,13 @@ const author = {
       gap: 2rem;
     }
 
+    .category-card-link {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: all 0.3s ease;
+    }
+
     .category-card {
       background: white;
       padding: 2rem;
@@ -343,9 +352,10 @@ const author = {
       transition: all 0.3s ease;
     }
 
-    .category-card:hover {
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    .category-card-link:hover .category-card {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       border-color: #0091b8;
+      transform: translateY(-4px);
     }
 
     .category-icon {
@@ -366,7 +376,7 @@ const author = {
       line-height: 1.5;
     }
 
-    .category-btn {
+    .category-btn-text {
       display: inline-block;
       background: #003b66;
       color: white;
@@ -377,7 +387,7 @@ const author = {
       font-weight: 500;
     }
 
-    .category-btn:hover {
+    .category-card-link:hover .category-btn-text {
       background: #0091b8;
     }
 
@@ -392,12 +402,25 @@ const author = {
       gap: 1.5rem;
     }
 
+    .popular-item-link {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: all 0.3s ease;
+    }
+
     .popular-item {
       background: white;
       padding: 1.5rem;
       border-radius: 8px;
       border: 1px solid #e0e0e0;
       position: relative;
+      transition: all 0.3s;
+    }
+
+    .popular-item-link:hover .popular-item {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px);
     }
 
     .popular-badge {
@@ -431,10 +454,6 @@ const author = {
       font-size: 0.95rem;
     }
 
-    .popular-link:hover {
-      text-decoration: underline;
-    }
-
     /* CTA SECTION */
     .cta-section {
       background: linear-gradient(135deg, #003b66 0%, #0091b8 100%);
@@ -448,6 +467,7 @@ const author = {
     .cta-section h2 {
       margin: 0 0 1rem 0;
       font-size: 2rem;
+      color: white;
     }
 
     .cta-section p {
