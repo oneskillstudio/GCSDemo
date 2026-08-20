@@ -13,18 +13,19 @@ const sortedPosts = allPosts
 // Featured posts (latest 4)
 const featuredPosts = sortedPosts.slice(0, 4);
 
-// Categories - hardcoded, safe
+// HARDCODED CATEGORIES - NO DYNAMIC EXTRACTION!
+// This prevents undefined values
 const categories = [
   { name: 'Technical', icon: '⚙️', description: 'Fast Formula, HDL, HCM Extract, BI Publisher, OTBI and advanced technical topics' },
   { name: 'Functional', icon: '👥', description: 'Core HR, Payroll, Absence, Benefits, Time & Labor, Recruiting configuration' },
   { name: 'Training', icon: '🎓', description: 'Step-by-step tutorials, implementation guides, and best practice documentation' }
 ];
 
-// Get unique tags - SAFELY filter undefined values
+// Get unique tags - SAFELY handle undefined
 const allTags = [...new Set(
   sortedPosts
-    .flatMap(post => post.data.tags || []) // Default to empty array if undefined
-    .filter(tag => tag) // Remove any undefined/null values
+    .flatMap(post => post.data.tags || [])
+    .filter(tag => tag && typeof tag === 'string')
 )];
 
 // Author info
