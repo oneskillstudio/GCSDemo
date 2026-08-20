@@ -5,15 +5,21 @@ import BlogLayout from '../../layouts/BlogLayout.astro';
 // Get all posts
 const allPosts = await getCollection('blog');
 
+// Get unique categories - safely
+const categoriesSet = new Set(
+  allPosts
+    .map(post => post.data.category)
+    .filter(cat => cat && typeof cat === 'string')
+);
+
 // Generate static paths for all categories
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
   
-  // Get unique categories and filter out undefined values
   const categories = [...new Set(
     posts
       .map(post => post.data.category)
-      .filter(cat => cat) // Remove undefined/null values
+      .filter(cat => cat && typeof cat === 'string')
   )];
   
   return categories.map(category => ({
@@ -31,11 +37,7 @@ const posts = allPosts
   .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
 
 // Get all categories for filter
-const categories = [...new Set(
-  allPosts
-    .map(post => post.data.category)
-    .filter(cat => cat) // Remove undefined values
-)];
+const categories = [...categoriesSet];
 ---
 
 <BlogLayout title={`${categoryName} Articles`} description={`Browse ${categoryName} articles on Oracle Fusion HCM`}>
@@ -49,7 +51,7 @@ const categories = [...new Set(
     <!-- CATEGORY FILTER -->
     <section class="category-filter">
       <a href="/blog" class="filter-btn">All Articles</a>
-      {categories.map(cat => (
+      {categories.length > 0 && categories.map(cat => (
         <a 
           href={`/blog/${cat.toLowerCase()}`} 
           class={`filter-btn ${cat.toLowerCase() === category ? 'active' : ''}`}
@@ -75,12 +77,12 @@ const categories = [...new Set(
                 </div>
               )}
               <div class="post-content">
-                <span class="post-category">{post.data.category}</span>
+                {post.data.category && <span class="post-category">{post.data.category}</span>}
                 <h2>{post.data.title}</h2>
                 <p>{post.data.description}</p>
                 <div class="post-meta">
                   <span class="post-date">{post.data.pubDate.toLocaleDateString()}</span>
-                  <span class="read-time">{post.data.readTime} min read</span>
+                  <span class="read-time">{post.data.readTime || 5} min read</span>
                 </div>
               </div>
             </article>
