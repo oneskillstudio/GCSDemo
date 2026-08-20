@@ -1,63 +1,596 @@
 ---
-import AboutHeroImage from '../assets/blog-placeholder-about.jpg';
-import Layout from '../layouts/BlogPost.astro';
+import BlogLayout from '../layouts/BlogLayout.astro';
+
+const author = {
+  name: 'Vaibhav Chavan',
+  title: 'Oracle Fusion HCM Solution Architect',
+  bio: 'I am an Oracle Fusion HCM Solution Architect with 10+ years of implementation experience across 15+ global organizations. My passion is helping enterprises design, implement, and optimize their Oracle Fusion HCM solutions.',
+  image: '/images/authors/vaibhav-chavan.jpg',
+  email: 'vaibhav@oneskillstudio.com',
+  linkedin: 'https://linkedin.com/in/vaibhav-chavan',
+  twitter: 'https://twitter.com/oneskill',
+  github: 'https://github.com/oneskillstudio'
+};
+
+const stats = [
+  { label: 'Years of Experience', value: '10+' },
+  { label: 'Organizations Implemented', value: '15+' },
+  { label: 'Articles Published', value: '100+' },
+  { label: 'Readers Served', value: '5000+' }
+];
+
+const expertise = [
+  {
+    category: 'Core HR',
+    items: ['Person Management', 'Assignments', 'Organizations', 'Employment Terms', 'Legal Entities']
+  },
+  {
+    category: 'Payroll & Compensation',
+    items: ['Payroll Processing', 'Compensation Planning', 'Salary Review', 'Stock Plans', 'Bonus Management']
+  },
+  {
+    category: 'Time & Labor',
+    items: ['Time Entry', 'Attendance', 'Labor Distributions', 'Compliance Rules', 'Payroll Integration']
+  },
+  {
+    category: 'Benefits Administration',
+    items: ['Enrollment', 'Plan Management', 'Benefits Rates', 'Life Events', 'Termination Processing']
+  },
+  {
+    category: 'Recruiting & Onboarding',
+    items: ['Job Requisitions', 'Candidate Screening', 'Offer Management', 'Onboarding', 'New Hire Setup']
+  },
+  {
+    category: 'Technical Development',
+    items: ['Fast Formula', 'HCM Data Loader', 'HCM Extract', 'Business Intelligence', 'OTBI Reports']
+  }
+];
+
+const skills = [
+  'Oracle Fusion HCM',
+  'Fast Formula',
+  'HCM Data Loader',
+  'HCM Extract',
+  'BI Publisher',
+  'OTBI',
+  'SQL',
+  'PL/SQL',
+  'Business Analysis',
+  'Technical Architecture',
+  'Implementation Methodology',
+  'Change Management'
+];
+
+const certifications = [
+  'Oracle Cloud Associate - Oracle Fusion HCM',
+  'Oracle Certified Associate Java Programmer',
+  'Certified Implementation Specialist - HCM',
+  'Project Management Professional (PMP)'
+];
+
+const testimonials = [
+  {
+    text: 'Vaibhav is an exceptional HCM architect who has deep technical and functional expertise. His ability to simplify complex requirements and deliver elegant solutions is outstanding.',
+    author: 'CEO, Fortune 500 Company'
+  },
+  {
+    text: 'Working with Vaibhav on our HCM implementation was transformative. His knowledge and dedication to excellence set him apart from other consultants.',
+    author: 'CTO, Global Technology Firm'
+  },
+  {
+    text: 'Vaibhav\'s training sessions are incredibly valuable. He has a gift for explaining complex HCM concepts in a way that everyone can understand.',
+    author: 'HCM Manager, Enterprise Organization'
+  }
+];
 ---
 
-<Layout
-	title="About Me"
-	description="Lorem ipsum dolor sit amet"
-	pubDate={new Date('August 08 2021')}
-	heroImage={AboutHeroImage}
->
-	<p>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-		labore et dolore magna aliqua. Vitae ultricies leo integer malesuada nunc vel risus commodo
-		viverra. Adipiscing enim eu turpis egestas pretium. Euismod elementum nisi quis eleifend quam
-		adipiscing. In hac habitasse platea dictumst vestibulum. Sagittis purus sit amet volutpat. Netus
-		et malesuada fames ac turpis egestas. Eget magna fermentum iaculis eu non diam phasellus
-		vestibulum lorem. Varius sit amet mattis vulputate enim. Habitasse platea dictumst quisque
-		sagittis. Integer quis auctor elit sed vulputate mi. Dictumst quisque sagittis purus sit amet.
-	</p>
+<BlogLayout title="About Vaibhav Chavan" description="Learn about Oracle Fusion HCM expert Vaibhav Chavan">
+  <div class="about-wrapper">
+    <!-- HERO SECTION -->
+    <section class="about-hero">
+      <div class="author-large">
+        <img 
+          src={author.image} 
+          alt={author.name}
+          onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 200%22%3E%3Crect fill=%22%23003B66%22 width=%22200%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%22100%22 fill=%22white%22%3EVC%3C/text%3E%3C/svg%3E'"
+        >
+      </div>
+      <div class="hero-content">
+        <h1>{author.name}</h1>
+        <p class="title">{author.title}</p>
+        <p class="bio">{author.bio}</p>
+        <div class="social-links">
+          <a href={author.linkedin} target="_blank" class="social-link">LinkedIn</a>
+          <a href={author.twitter} target="_blank" class="social-link">Twitter</a>
+          <a href={author.github} target="_blank" class="social-link">GitHub</a>
+          <a href={`mailto:${author.email}`} class="social-link">Email</a>
+        </div>
+      </div>
+    </section>
 
-	<p>
-		Morbi tristique senectus et netus. Id semper risus in hendrerit gravida rutrum quisque non
-		tellus. Habitasse platea dictumst quisque sagittis purus sit amet. Tellus molestie nunc non
-		blandit massa. Cursus vitae congue mauris rhoncus. Accumsan tortor posuere ac ut. Fringilla urna
-		porttitor rhoncus dolor. Elit ullamcorper dignissim cras tincidunt lobortis. In cursus turpis
-		massa tincidunt dui ut ornare lectus. Integer feugiat scelerisque varius morbi enim nunc.
-		Bibendum neque egestas congue quisque egestas diam. Cras ornare arcu dui vivamus arcu felis
-		bibendum. Dignissim suspendisse in est ante in nibh mauris. Sed tempus urna et pharetra pharetra
-		massa massa ultricies mi.
-	</p>
+    <!-- STATS SECTION -->
+    <section class="stats-section">
+      <h2 class="section-title">By The Numbers</h2>
+      <div class="stats-grid">
+        {stats.map(stat => (
+          <div class="stat-card">
+            <div class="stat-value">{stat.value}</div>
+            <div class="stat-label">{stat.label}</div>
+          </div>
+        ))}
+      </div>
+    </section>
 
-	<p>
-		Mollis nunc sed id semper risus in. Convallis a cras semper auctor neque. Diam sit amet nisl
-		suscipit. Lacus viverra vitae congue eu consequat ac felis donec. Egestas integer eget aliquet
-		nibh praesent tristique magna sit amet. Eget magna fermentum iaculis eu non diam. In vitae
-		turpis massa sed elementum. Tristique et egestas quis ipsum suspendisse ultrices. Eget lorem
-		dolor sed viverra ipsum. Vel turpis nunc eget lorem dolor sed viverra. Posuere ac ut consequat
-		semper viverra nam. Laoreet suspendisse interdum consectetur libero id faucibus. Diam phasellus
-		vestibulum lorem sed risus ultricies tristique. Rhoncus dolor purus non enim praesent elementum
-		facilisis. Ultrices tincidunt arcu non sodales neque. Tempus egestas sed sed risus pretium quam
-		vulputate. Viverra suspendisse potenti nullam ac tortor vitae purus faucibus ornare. Fringilla
-		urna porttitor rhoncus dolor purus non. Amet dictum sit amet justo donec enim.
-	</p>
+    <!-- EXPERTISE SECTION -->
+    <section class="expertise-section">
+      <h2 class="section-title">Areas of Expertise</h2>
+      <div class="expertise-grid">
+        {expertise.map(area => (
+          <div class="expertise-card">
+            <h3>{area.category}</h3>
+            <ul>
+              {area.items.map(item => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
 
-	<p>
-		Mattis ullamcorper velit sed ullamcorper morbi tincidunt. Tortor posuere ac ut consequat semper
-		viverra. Tellus mauris a diam maecenas sed enim ut sem viverra. Venenatis urna cursus eget nunc
-		scelerisque viverra mauris in. Arcu ac tortor dignissim convallis aenean et tortor at. Curabitur
-		gravida arcu ac tortor dignissim convallis aenean et tortor. Egestas tellus rutrum tellus
-		pellentesque eu. Fusce ut placerat orci nulla pellentesque dignissim enim sit amet. Ut enim
-		blandit volutpat maecenas volutpat blandit aliquam etiam. Id donec ultrices tincidunt arcu. Id
-		cursus metus aliquam eleifend mi.
-	</p>
+    <!-- SKILLS SECTION -->
+    <section class="skills-section">
+      <h2 class="section-title">Skills & Technologies</h2>
+      <div class="skills-grid">
+        {skills.map(skill => (
+          <span class="skill-badge">{skill}</span>
+        ))}
+      </div>
+    </section>
 
-	<p>
-		Tempus quam pellentesque nec nam aliquam sem. Risus at ultrices mi tempus imperdiet. Id porta
-		nibh venenatis cras sed felis eget velit. Ipsum a arcu cursus vitae. Facilisis magna etiam
-		tempor orci eu lobortis elementum. Tincidunt dui ut ornare lectus sit. Quisque non tellus orci
-		ac. Blandit libero volutpat sed cras. Nec tincidunt praesent semper feugiat nibh sed pulvinar
-		proin gravida. Egestas integer eget aliquet nibh praesent tristique magna.
-	</p>
-</Layout>
+    <!-- CERTIFICATIONS SECTION -->
+    <section class="certifications-section">
+      <h2 class="section-title">Certifications</h2>
+      <div class="certifications-list">
+        {certifications.map(cert => (
+          <div class="certification-item">
+            <span class="cert-icon">✓</span>
+            <span>{cert}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS SECTION -->
+    <section class="testimonials-section">
+      <h2 class="section-title">What Others Say</h2>
+      <div class="testimonials-grid">
+        {testimonials.map(testimonial => (
+          <div class="testimonial-card">
+            <p class="testimonial-text">"{testimonial.text}"</p>
+            <p class="testimonial-author">— {testimonial.author}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- JOURNEY SECTION -->
+    <section class="journey-section">
+      <h2 class="section-title">My Journey</h2>
+      <div class="journey-content">
+        <p>My career in enterprise software has been an incredible journey. Starting as a developer, I quickly realized my passion was solving complex business problems through technology.</p>
+        
+        <p>Over the past decade, I've had the privilege of working with some of the world's largest organizations, helping them implement and optimize Oracle Fusion HCM. Each project has taught me something new about what it takes to deliver excellence.</p>
+
+        <p>Through these experiences, I've learned that successful HCM implementations are not just about the technology—they're about understanding business processes, managing change, and empowering teams to succeed.</p>
+
+        <p>This knowledge base is my way of giving back to the HCM community. I've documented my learnings, best practices, and solutions to help others navigate their Oracle Fusion HCM journey.</p>
+
+        <p>Whether you're just starting with HCM or looking to optimize your existing system, I'm here to help you succeed.</p>
+      </div>
+    </section>
+
+    <!-- CTA SECTION -->
+    <section class="cta-section">
+      <h2>Let's Work Together</h2>
+      <p>Have a project in mind? Need expert consultation? Let's connect and discuss how I can help your organization succeed.</p>
+      <div class="cta-buttons">
+        <a href={`mailto:${author.email}`} class="cta-btn">Send an Email</a>
+        <a href="/" class="cta-btn cta-btn-secondary">Back to Blog</a>
+      </div>
+    </section>
+  </div>
+
+  <style>
+    .about-wrapper {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* HERO SECTION */
+    .about-hero {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 3rem;
+      align-items: center;
+      margin-bottom: 3rem;
+      padding: 2rem;
+      background: white;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+    }
+
+    .author-large {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #f0f0f0;
+    }
+
+    .author-large img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .hero-content h1 {
+      color: #003b66;
+      margin: 0 0 0.5rem 0;
+      font-size: 2.5rem;
+    }
+
+    .hero-content .title {
+      color: #0091b8;
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin: 0 0 1rem 0;
+    }
+
+    .hero-content .bio {
+      color: #666;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      margin: 0 0 1.5rem 0;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .social-link {
+      display: inline-block;
+      background: #003b66;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+
+    .social-link:hover {
+      background: #0091b8;
+    }
+
+    /* STATS SECTION */
+    .stats-section {
+      margin-bottom: 3rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #003b66 0%, #0091b8 100%);
+      color: white;
+      padding: 2rem;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 0.95rem;
+      opacity: 0.95;
+    }
+
+    /* SECTION TITLE */
+    .section-title {
+      color: #003b66;
+      margin: 2rem 0 1.5rem 0;
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+
+    /* EXPERTISE SECTION */
+    .expertise-section {
+      margin-bottom: 3rem;
+    }
+
+    .expertise-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .expertise-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+    }
+
+    .expertise-card h3 {
+      color: #003b66;
+      margin: 0 0 1rem 0;
+      font-size: 1.2rem;
+    }
+
+    .expertise-card ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .expertise-card li {
+      padding: 0.5rem 0;
+      color: #666;
+      border-bottom: 1px solid #f0f0f0;
+      position: relative;
+      padding-left: 1.5rem;
+    }
+
+    .expertise-card li:last-child {
+      border-bottom: none;
+    }
+
+    .expertise-card li:before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: #0091b8;
+      font-weight: bold;
+    }
+
+    /* SKILLS SECTION */
+    .skills-section {
+      margin-bottom: 3rem;
+    }
+
+    .skills-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .skill-badge {
+      display: inline-block;
+      background: #e8f2f8;
+      color: #003b66;
+      padding: 0.5rem 1.2rem;
+      border-radius: 25px;
+      font-weight: 500;
+      transition: all 0.2s;
+      border: 2px solid #e8f2f8;
+    }
+
+    .skill-badge:hover {
+      background: white;
+      border-color: #003b66;
+    }
+
+    /* CERTIFICATIONS SECTION */
+    .certifications-section {
+      margin-bottom: 3rem;
+    }
+
+    .certifications-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .certification-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      transition: all 0.2s;
+    }
+
+    .certification-item:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-color: #0091b8;
+    }
+
+    .cert-icon {
+      color: #0091b8;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .certification-item span:last-child {
+      color: #666;
+      font-size: 0.95rem;
+    }
+
+    /* TESTIMONIALS SECTION */
+    .testimonials-section {
+      margin-bottom: 3rem;
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .testimonial-card {
+      background: linear-gradient(135deg, #f0f0f0 0%, #f8f8f8 100%);
+      padding: 2rem;
+      border-radius: 8px;
+      border-left: 4px solid #0091b8;
+    }
+
+    .testimonial-text {
+      color: #333;
+      font-size: 1rem;
+      line-height: 1.6;
+      margin: 0 0 1rem 0;
+      font-style: italic;
+    }
+
+    .testimonial-author {
+      color: #666;
+      font-weight: 600;
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
+    /* JOURNEY SECTION */
+    .journey-section {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      margin-bottom: 3rem;
+    }
+
+    .journey-content {
+      margin-top: 1.5rem;
+    }
+
+    .journey-content p {
+      color: #666;
+      font-size: 1.05rem;
+      line-height: 1.8;
+      margin: 0 0 1.5rem 0;
+    }
+
+    .journey-content p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* CTA SECTION */
+    .cta-section {
+      background: linear-gradient(135deg, #003b66 0%, #0091b8 100%);
+      color: white;
+      padding: 3rem;
+      border-radius: 8px;
+      text-align: center;
+      margin: 3rem 0;
+    }
+
+    .cta-section h2 {
+      margin: 0 0 1rem 0;
+      font-size: 2rem;
+    }
+
+    .cta-section p {
+      margin: 0 0 2rem 0;
+      font-size: 1.1rem;
+      opacity: 0.95;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      background: white;
+      color: #003b66;
+      padding: 0.75rem 2rem;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .cta-btn:hover {
+      background: #f0f0f0;
+      transform: translateY(-2px);
+    }
+
+    .cta-btn-secondary {
+      background: transparent;
+      color: white;
+      border: 2px solid white;
+    }
+
+    .cta-btn-secondary:hover {
+      background: white;
+      color: #003b66;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .about-hero {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .author-large {
+        width: 150px;
+        height: 150px;
+        margin: 0 auto;
+      }
+
+      .hero-content h1 {
+        font-size: 2rem;
+        text-align: center;
+      }
+
+      .hero-content .title,
+      .hero-content .bio {
+        text-align: center;
+      }
+
+      .social-links {
+        justify-content: center;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .expertise-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .certifications-list {
+        grid-template-columns: 1fr;
+      }
+
+      .cta-buttons {
+        flex-direction: column;
+      }
+
+      .cta-btn {
+        width: 100%;
+      }
+    }
+  </style>
+</BlogLayout>
