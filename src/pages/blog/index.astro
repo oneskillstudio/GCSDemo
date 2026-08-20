@@ -10,8 +10,12 @@ const posts = allPosts
   .filter(post => !post.data.draft)
   .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
 
-// Get unique categories
-const categories = [...new Set(posts.map(post => post.data.category))];
+// Get unique categories - safely
+const categories = [...new Set(
+  posts
+    .map(post => post.data.category)
+    .filter(cat => cat && typeof cat === 'string')
+)];
 ---
 
 <BlogLayout title="Blog - All Articles" description="Browse all Oracle Fusion HCM articles">
@@ -25,7 +29,7 @@ const categories = [...new Set(posts.map(post => post.data.category))];
     <!-- CATEGORY FILTER -->
     <section class="category-filter">
       <a href="/blog" class="filter-btn active">All Articles</a>
-      {categories.map(cat => (
+      {categories.length > 0 && categories.map(cat => (
         <a href={`/blog/${cat.toLowerCase()}`} class="filter-btn">
           {cat}
         </a>
@@ -36,8 +40,8 @@ const categories = [...new Set(posts.map(post => post.data.category))];
     <section class="posts-grid">
       {posts.length > 0 ? (
         posts.map(post => (
-          <article class="post-card">
-            <a href={`/blog/${post.slug}`} class="post-link">
+          <a href={`/blog/${post.slug}`} class="post-card-link">
+            <article class="post-card">
               {post.data.image && (
                 <div class="post-image">
                   <img 
@@ -48,16 +52,16 @@ const categories = [...new Set(posts.map(post => post.data.category))];
                 </div>
               )}
               <div class="post-content">
-                <span class="post-category">{post.data.category}</span>
+                {post.data.category && <span class="post-category">{post.data.category}</span>}
                 <h2>{post.data.title}</h2>
                 <p>{post.data.description}</p>
                 <div class="post-meta">
                   <span class="post-date">{post.data.pubDate.toLocaleDateString()}</span>
-                  <span class="read-time">{post.data.readTime} min read</span>
+                  <span class="read-time">{post.data.readTime || 5} min read</span>
                 </div>
               </div>
-            </a>
-          </article>
+            </article>
+          </a>
         ))
       ) : (
         <p class="no-posts">No posts found.</p>
@@ -80,6 +84,7 @@ const categories = [...new Set(posts.map(post => post.data.category))];
     .blog-header h1 {
       font-size: 2.5rem;
       margin-bottom: 0.5rem;
+      color: #003b66;
     }
 
     .blog-header p {
@@ -87,7 +92,6 @@ const categories = [...new Set(posts.map(post => post.data.category))];
       color: #666;
     }
 
-    /* CATEGORY FILTER */
     .category-filter {
       display: flex;
       gap: 1rem;
@@ -117,12 +121,18 @@ const categories = [...new Set(posts.map(post => post.data.category))];
       border-color: #003b66;
     }
 
-    /* POSTS GRID */
     .posts-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 2rem;
       margin-bottom: 3rem;
+    }
+
+    .post-card-link {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: all 0.3s;
     }
 
     .post-card {
@@ -133,16 +143,9 @@ const categories = [...new Set(posts.map(post => post.data.category))];
       transition: all 0.3s;
     }
 
-    .post-card:hover {
+    .post-card-link:hover .post-card {
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       transform: translateY(-4px);
-    }
-
-    .post-link {
-      display: block;
-      text-decoration: none;
-      color: inherit;
-      cursor: pointer;
     }
 
     .post-image {
@@ -159,7 +162,7 @@ const categories = [...new Set(posts.map(post => post.data.category))];
       transition: transform 0.3s;
     }
 
-    .post-card:hover .post-image img {
+    .post-card-link:hover .post-image img {
       transform: scale(1.05);
     }
 
