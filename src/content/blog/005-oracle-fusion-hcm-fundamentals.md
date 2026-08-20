@@ -1,11 +1,17 @@
 ---
-title: 'Oracle Fusion HCM Fundamentals: Complete Beginner's Guide'
-description: 'Comprehensive beginner guide to Oracle Fusion HCM covering core concepts, architecture, modules, and fundamental skills needed to get started.'
-pubDate: '2024-12-18'
-author: 'Vaibhav Chavan'
-category: 'Training'
-tags: ['Oracle Fusion HCM', 'Training', 'Fundamentals', 'Beginner', 'Guide', 'HCM']
-image: '/images/posts/005-fundamentals.jpg'
+title: Oracle Fusion HCM Fundamentals - Complete Beginner Guide
+description: Comprehensive beginner guide to Oracle Fusion HCM covering core concepts, architecture, modules, and fundamental skills needed to get started.
+pubDate: 2024-12-12
+author: Vaibhav Chavan
+category: Training
+tags:
+  - Oracle Fusion HCM
+  - Training
+  - Fundamentals
+  - Beginner
+  - Guide
+  - HCM
+image: /images/posts/005-fundamentals.jpg
 readTime: 30
 draft: false
 ---
