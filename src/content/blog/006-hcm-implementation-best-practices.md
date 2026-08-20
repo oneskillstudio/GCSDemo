@@ -4,7 +4,11 @@ description: 'Complete implementation guide covering project planning, phase exe
 pubDate: 2024-12-10
 author: 'Vaibhav Chavan'
 category: 'Training'
-tags: ['Implementation', 'Best Practices', 'Oracle Fusion', 'HCM', 'Project Management', 'Training']
+tags: 
+        - Implementation
+        - Best Practices
+        - Project Management
+        - Training
 image: '/images/posts/006-implementation.jpg'
 readTime: 32
 draft: false
