@@ -4,7 +4,12 @@ description: 'In-depth guide to Oracle Fusion HCM Payroll configuration includin
 pubDate: 2024-12-14
 author: 'Vaibhav Chavan'
 category: 'Functional'
-tags: ['Payroll', 'Configuration', 'Oracle Fusion', 'HCM', 'Earnings', 'Deductions']
+tags: 
+      - Payroll
+      - Configuration
+      - Oracle Fusion
+      - Earnings
+      - Deductions
 image: '/images/posts/004-payroll.jpg'
 readTime: 28
 draft: false
