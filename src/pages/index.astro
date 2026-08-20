@@ -51,24 +51,22 @@ const author = {
       <h2 class="section-title">Featured Articles</h2>
       <div class="featured-posts">
         {featuredPosts.map(post => (
-          <article class="featured-card">
-            <div class="featured-image">
-              <img 
-                src={post.data.image || '/images/placeholder.jpg'} 
-                alt={post.data.title}
-                onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 200%22%3E%3Crect fill=%22%23E8F2F8%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2248%22%3E📝%3C/text%3E%3C/svg%3E'"
-              >
-            </div>
-            <div class="featured-content">
-              <span class="featured-category">{post.data.category}</span>
-              <h3>{post.data.title}</h3>
-              <p>{post.data.description}</p>
-              <div class="featured-meta">
-                <span>{post.data.pubDate.toLocaleDateString()}</span>
-                <a href={`/blog/${post.slug}`} class="read-more">Read →</a>
-              </div>
-            </div>
-          </article>
+            <a href={`/blog/${post.slug}`} class="featured-card-link">
+              <article class="featured-card">
+                <div class="featured-image">
+                  <img src={...} alt={...} />
+                </div>
+                <div class="featured-content">
+                  <span class="featured-category">{post.data.category}</span>
+                  <h3>{post.data.title}</h3>
+                  <p>{post.data.description}</p>
+                  <div class="featured-meta">
+                    <span>{post.data.pubDate.toLocaleDateString()}</span>
+                    <span class="read-more">Read →</span>
+                  </div>
+                </div>
+              </article>
+            </a>
         ))}
       </div>
 
@@ -253,6 +251,22 @@ const author = {
       overflow: hidden;
       background: #f0f0f0;
     }
+
+.featured-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.featured-card {
+  cursor: pointer;
+}
+
+.featured-card-link:hover .featured-card {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
 
     .featured-image img {
       width: 100%;
