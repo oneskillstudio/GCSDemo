@@ -4,7 +4,13 @@ description: 'Complete functional guide to Oracle Fusion HCM Core HR configurati
 pubDate: 2024-12-16
 author: 'Vaibhav Chavan'
 category: 'Functional'
-tags: ['Core HR', 'Configuration', 'Oracle Fusion', 'HCM', 'Implementation', 'Functional']
+tags: 
+      - Core HR
+      - Configuration
+      - Oracle Fusion
+      - HCM
+      - Implementation
+      - Functional
 image: '/images/posts/003-core-hr.jpg'
 readTime: 26
 draft: false
