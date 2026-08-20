@@ -5,10 +5,16 @@ import BlogLayout from '../../layouts/BlogLayout.astro';
 // Get all posts
 const allPosts = await getCollection('blog');
 
-// Get unique categories
+// Generate static paths for all categories
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
-  const categories = [...new Set(posts.map(post => post.data.category))];
+  
+  // Get unique categories and filter out undefined values
+  const categories = [...new Set(
+    posts
+      .map(post => post.data.category)
+      .filter(cat => cat) // Remove undefined/null values
+  )];
   
   return categories.map(category => ({
     params: { category: category.toLowerCase() },
@@ -21,11 +27,15 @@ const { categoryName } = Astro.props;
 
 // Filter posts by category
 const posts = allPosts
-  .filter(post => !post.data.draft && post.data.category.toLowerCase() === category)
+  .filter(post => !post.data.draft && post.data.category && post.data.category.toLowerCase() === category)
   .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
 
 // Get all categories for filter
-const categories = [...new Set(allPosts.map(post => post.data.category))];
+const categories = [...new Set(
+  allPosts
+    .map(post => post.data.category)
+    .filter(cat => cat) // Remove undefined values
+)];
 ---
 
 <BlogLayout title={`${categoryName} Articles`} description={`Browse ${categoryName} articles on Oracle Fusion HCM`}>
@@ -53,8 +63,8 @@ const categories = [...new Set(allPosts.map(post => post.data.category))];
     <section class="posts-grid">
       {posts.length > 0 ? (
         posts.map(post => (
-          <article class="post-card">
-            <a href={`/blog/${post.slug}`} class="post-link">
+          <a href={`/blog/${post.slug}`} class="post-card-link">
+            <article class="post-card">
               {post.data.image && (
                 <div class="post-image">
                   <img 
@@ -73,8 +83,8 @@ const categories = [...new Set(allPosts.map(post => post.data.category))];
                   <span class="read-time">{post.data.readTime} min read</span>
                 </div>
               </div>
-            </a>
-          </article>
+            </article>
+          </a>
         ))
       ) : (
         <p class="no-posts">No posts in this category yet.</p>
@@ -97,6 +107,7 @@ const categories = [...new Set(allPosts.map(post => post.data.category))];
     .blog-header h1 {
       font-size: 2.5rem;
       margin-bottom: 0.5rem;
+      color: #003b66;
     }
 
     .blog-header p {
@@ -140,6 +151,13 @@ const categories = [...new Set(allPosts.map(post => post.data.category))];
       margin-bottom: 3rem;
     }
 
+    .post-card-link {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: all 0.3s;
+    }
+
     .post-card {
       background: white;
       border-radius: 8px;
@@ -148,16 +166,9 @@ const categories = [...new Set(allPosts.map(post => post.data.category))];
       transition: all 0.3s;
     }
 
-    .post-card:hover {
+    .post-card-link:hover .post-card {
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       transform: translateY(-4px);
-    }
-
-    .post-link {
-      display: block;
-      text-decoration: none;
-      color: inherit;
-      cursor: pointer;
     }
 
     .post-image {
@@ -174,7 +185,7 @@ const categories = [...new Set(allPosts.map(post => post.data.category))];
       transition: transform 0.3s;
     }
 
-    .post-card:hover .post-image img {
+    .post-card-link:hover .post-image img {
       transform: scale(1.05);
     }
 
@@ -235,6 +246,15 @@ const categories = [...new Set(allPosts.map(post => post.data.category))];
 
       .blog-header h1 {
         font-size: 2rem;
+      }
+
+      .category-filter {
+        gap: 0.5rem;
+      }
+
+      .filter-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
       }
     }
   </style>
