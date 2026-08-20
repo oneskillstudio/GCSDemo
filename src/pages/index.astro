@@ -1,49 +1,661 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
-import Header from '../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { getCollection } from 'astro:content';
+import BlogLayout from '../layouts/BlogLayout.astro';
+
+// Get all blog posts
+const allPosts = await getCollection('blog');
+
+// Sort by date (newest first)
+const sortedPosts = allPosts
+  .filter(post => !post.data.draft)
+  .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
+
+// Featured posts (latest 4)
+const featuredPosts = sortedPosts.slice(0, 4);
+
+// Categories
+const categories = [
+  { name: 'Technical', icon: '⚙️', description: 'Fast Formula, HDL, HCM Extract, BI Publisher, OTBI and advanced technical topics' },
+  { name: 'Functional', icon: '👥', description: 'Core HR, Payroll, Absence, Benefits, Time & Labor, Recruiting configuration' },
+  { name: 'Training', icon: '🎓', description: 'Step-by-step tutorials, implementation guides, and best practice documentation' }
+];
+
+// Get unique tags
+const allTags = [...new Set(sortedPosts.flatMap(post => post.data.tags))];
+
+// Author info
+const author = {
+  name: 'Vaibhav Chavan',
+  bio: 'Oracle Fusion HCM Solution Architect with 10+ years of implementation experience across 15+ global organizations.',
+  image: '/images/authors/vaibhav-chavan.jpg'
+};
 ---
 
-<!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This template
-				serves as a lightweight, minimally-styled starting point for anyone looking to build a personal
-				website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to
-				<a href="https://docs.astro.build/">read the docs</a>
-				or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out
-				<a href="https://github.com/Charca/astro-blog-template">astro-blog-template</a>
-				by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
-		</main>
-		<Footer />
-	</body>
-</html>
+<BlogLayout title="Home" description="Oracle Fusion HCM Expert Knowledge Base">
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <h1>Oracle Fusion HCM Expert Knowledge Base</h1>
+    <p>Deep-dive technical guides and functional expertise for implementing enterprise HCM solutions. Learn from real-world implementations and best practices.</p>
+    <div class="hero-meta">
+      <div><strong>{featuredPosts.length}</strong> Featured Articles</div>
+      <div><strong>{categories.length}</strong> Categories</div>
+      <div><strong>1000+</strong> Readers</div>
+    </div>
+  </section>
+
+  <!-- MAIN WRAPPER (Content + Sidebar) -->
+  <div class="main-wrapper">
+    <!-- LEFT: Main Content -->
+    <main class="main-content">
+      <!-- FEATURED POSTS SECTION -->
+      <h2 class="section-title">Featured Articles</h2>
+      <div class="featured-posts">
+        {featuredPosts.map(post => (
+          <article class="featured-card">
+            <div class="featured-image">
+              <img 
+                src={post.data.image || '/images/placeholder.jpg'} 
+                alt={post.data.title}
+                onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 200%22%3E%3Crect fill=%22%23E8F2F8%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2248%22%3E📝%3C/text%3E%3C/svg%3E'"
+              >
+            </div>
+            <div class="featured-content">
+              <span class="featured-category">{post.data.category}</span>
+              <h3>{post.data.title}</h3>
+              <p>{post.data.description}</p>
+              <div class="featured-meta">
+                <span>{post.data.pubDate.toLocaleDateString()}</span>
+                <a href={`/blog/${post.slug}`} class="read-more">Read →</a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <!-- BROWSE BY CATEGORY -->
+      <section class="category-section">
+        <h2 class="section-title">Browse by Category</h2>
+        <div class="category-grid">
+          {categories.map(cat => (
+            <div class="category-card">
+              <div class="category-icon">{cat.icon}</div>
+              <h3>{cat.name}</h3>
+              <p>{cat.description}</p>
+              <a href={`/blog/${cat.name.toLowerCase()}`} class="category-btn">Explore {cat.name}</a>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- POPULAR THIS MONTH -->
+      <section class="popular-section">
+        <h2 class="section-title">Popular Articles</h2>
+        <div class="popular-grid">
+          {featuredPosts.map(post => (
+            <div class="popular-item">
+              <span class="popular-badge">Featured</span>
+              <h4>{post.data.title}</h4>
+              <p>{post.data.description}</p>
+              <a href={`/blog/${post.slug}`} class="popular-link">Read Article →</a>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- CTA SECTION -->
+      <section class="cta-section">
+        <h2>Ready to Dive Deeper?</h2>
+        <p>Explore our comprehensive collection of Oracle Fusion HCM guides, tutorials, and best practices to master enterprise implementations.</p>
+        <a href="/blog" class="cta-btn">Browse All Articles</a>
+        <a href="/about" class="cta-btn cta-btn-secondary">About the Author</a>
+      </section>
+    </main>
+
+    <!-- RIGHT: SIDEBAR -->
+    <aside class="sidebar">
+      <!-- Search -->
+      <div class="sidebar-box">
+        <h3>Search Articles</h3>
+        <form class="search-form">
+          <input type="text" placeholder="Search..." name="q">
+          <button type="submit">🔍</button>
+        </form>
+      </div>
+
+      <!-- Recent Posts -->
+      <div class="sidebar-box">
+        <h3>Latest Articles</h3>
+        <div class="recent-posts">
+          {sortedPosts.slice(0, 4).map(post => (
+            <div class="recent-post-item">
+              <a href={`/blog/${post.slug}`}>{post.data.title}</a>
+              <span class="recent-post-date">{post.data.pubDate.toLocaleDateString()}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Author Bio -->
+      <div class="sidebar-box author-section">
+        <div class="author-avatar">
+          <img 
+            src={author.image} 
+            alt={author.name}
+            onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%23003B66%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2250%22 fill=%22white%22%3EVC%3C/text%3E%3C/svg%3E'"
+          >
+        </div>
+        <h4>{author.name}</h4>
+        <p>{author.bio}</p>
+        <a href="/about" class="author-btn">Learn More</a>
+      </div>
+
+      <!-- Resources -->
+      <div class="sidebar-box digital-products">
+        <h3>Resources</h3>
+        <p>Expert guides and tools</p>
+        <div class="product-item">📚 Implementation Guide</div>
+        <div class="product-item">🎓 Fast Formula Mastery</div>
+        <div class="product-item">📊 Configuration Checklist</div>
+      </div>
+
+      <!-- Tags -->
+      <div class="sidebar-box">
+        <h3>Topics</h3>
+        <div class="tags">
+          {allTags.map(tag => (
+            <span class="tag">{tag}</span>
+          ))}
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <style>
+    /* HERO SECTION */
+    .hero {
+      text-align: center;
+      padding: 3rem 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 8px;
+      margin-bottom: 3rem;
+    }
+
+    .hero h1 {
+      margin: 0 0 1rem 0;
+      font-size: 2.5rem;
+      font-weight: bold;
+    }
+
+    .hero p {
+      margin: 0 0 2rem 0;
+      font-size: 1.1rem;
+      opacity: 0.95;
+    }
+
+    .hero-meta {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      margin-top: 2rem;
+    }
+
+    .hero-meta div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .hero-meta strong {
+      font-size: 2rem;
+      display: block;
+    }
+
+    /* MAIN WRAPPER */
+    .main-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 2rem;
+    }
+
+    /* SECTION TITLE */
+    .section-title {
+      color: #003b66;
+      margin: 2rem 0 1.5rem 0;
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+
+    /* FEATURED POSTS */
+    .featured-posts {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .featured-card {
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #e0e0e0;
+      transition: all 0.3s ease;
+    }
+
+    .featured-card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transform: translateY(-4px);
+    }
+
+    .featured-image {
+      width: 100%;
+      height: 160px;
+      overflow: hidden;
+      background: #f0f0f0;
+    }
+
+    .featured-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .featured-content {
+      padding: 1.5rem;
+    }
+
+    .featured-category {
+      display: inline-block;
+      background: #e8f2f8;
+      color: #003b66;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .featured-card h3 {
+      margin: 0.5rem 0;
+      color: #003b66;
+      font-size: 1.1rem;
+      line-height: 1.4;
+    }
+
+    .featured-card p {
+      margin: 0.75rem 0;
+      color: #666;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .featured-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #f0f0f0;
+      color: #999;
+      font-size: 0.9rem;
+    }
+
+    .read-more {
+      color: #0091b8;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .read-more:hover {
+      text-decoration: underline;
+    }
+
+    /* CATEGORY SECTION */
+    .category-section {
+      margin-bottom: 3rem;
+    }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+
+    .category-card {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .category-card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-color: #0091b8;
+    }
+
+    .category-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .category-card h3 {
+      color: #003b66;
+      margin: 0 0 0.5rem 0;
+      font-size: 1.3rem;
+    }
+
+    .category-card p {
+      color: #666;
+      margin: 0 0 1.5rem 0;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .category-btn {
+      display: inline-block;
+      background: #003b66;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 5px;
+      text-decoration: none;
+      transition: background 0.2s;
+      font-weight: 500;
+    }
+
+    .category-btn:hover {
+      background: #0091b8;
+    }
+
+    /* POPULAR SECTION */
+    .popular-section {
+      margin-bottom: 3rem;
+    }
+
+    .popular-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .popular-item {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      position: relative;
+    }
+
+    .popular-badge {
+      display: inline-block;
+      background: #e8f2f8;
+      color: #003b66;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .popular-item h4 {
+      color: #003b66;
+      margin: 0.5rem 0;
+      font-size: 1rem;
+      line-height: 1.3;
+    }
+
+    .popular-item p {
+      color: #666;
+      margin: 0.5rem 0;
+      font-size: 0.9rem;
+    }
+
+    .popular-link {
+      color: #0091b8;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .popular-link:hover {
+      text-decoration: underline;
+    }
+
+    /* CTA SECTION */
+    .cta-section {
+      background: linear-gradient(135deg, #003b66 0%, #0091b8 100%);
+      color: white;
+      padding: 3rem;
+      border-radius: 8px;
+      text-align: center;
+      margin: 3rem 0;
+    }
+
+    .cta-section h2 {
+      margin: 0 0 1rem 0;
+      font-size: 2rem;
+    }
+
+    .cta-section p {
+      margin: 0 0 2rem 0;
+      font-size: 1.1rem;
+      opacity: 0.95;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      background: white;
+      color: #003b66;
+      padding: 0.75rem 2rem;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: 500;
+      margin: 0 1rem;
+      transition: all 0.2s;
+    }
+
+    .cta-btn:hover {
+      background: #f0f0f0;
+      transform: translateY(-2px);
+    }
+
+    .cta-btn-secondary {
+      background: transparent;
+      color: white;
+      border: 2px solid white;
+    }
+
+    .cta-btn-secondary:hover {
+      background: white;
+      color: #003b66;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .sidebar-box {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+    }
+
+    .sidebar-box h3 {
+      color: #003b66;
+      margin: 0 0 1rem 0;
+      font-size: 1.1rem;
+    }
+
+    .sidebar-box h4 {
+      color: #003b66;
+      margin: 0 0 0.5rem 0;
+    }
+
+    .search-form {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .search-form input {
+      flex: 1;
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 0.95rem;
+    }
+
+    .search-form button {
+      padding: 0.5rem 1rem;
+      background: #003b66;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .search-form button:hover {
+      background: #0091b8;
+    }
+
+    .recent-posts {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .recent-post-item a {
+      color: #003b66;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .recent-post-item a:hover {
+      text-decoration: underline;
+    }
+
+    .recent-post-date {
+      color: #999;
+      font-size: 0.85rem;
+    }
+
+    .author-section {
+      text-align: center;
+    }
+
+    .author-avatar {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 1rem;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #f0f0f0;
+    }
+
+    .author-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .sidebar-box p {
+      color: #666;
+      font-size: 0.95rem;
+      margin: 0.5rem 0;
+      line-height: 1.5;
+    }
+
+    .author-btn {
+      display: inline-block;
+      background: #003b66;
+      color: white;
+      padding: 0.5rem 1.5rem;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: 500;
+      margin-top: 1rem;
+      transition: background 0.2s;
+    }
+
+    .author-btn:hover {
+      background: #0091b8;
+    }
+
+    .digital-products {
+      background: linear-gradient(135deg, #e8f2f8 0%, #d0e8f2 100%);
+    }
+
+    .product-item {
+      padding: 0.5rem 0;
+      color: #003b66;
+      font-weight: 500;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .tag {
+      display: inline-block;
+      background: #f0f0f0;
+      color: #003b66;
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .tag:hover {
+      background: #e8f2f8;
+      border-color: #0091b8;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      .main-wrapper {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      .hero-meta {
+        gap: 2rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .featured-posts {
+        grid-template-columns: 1fr;
+      }
+
+      .category-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .popular-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-meta {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .cta-btn {
+        margin: 0.5rem;
+        display: block;
+        width: 100%;
+      }
+    }
+  </style>
+</BlogLayout>
