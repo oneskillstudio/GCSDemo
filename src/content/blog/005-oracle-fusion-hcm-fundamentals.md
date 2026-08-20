@@ -1,7 +1,7 @@
 ---
 title: 'Oracle Fusion HCM Fundamentals: Complete Beginner's Guide'
 description: 'Comprehensive beginner guide to Oracle Fusion HCM covering core concepts, architecture, modules, and fundamental skills needed to get started.'
-pubDate: 'Jul 08 2026'
+pubDate: '2024-12-18'
 author: 'Vaibhav Chavan'
 category: 'Training'
 tags: ['Oracle Fusion HCM', 'Training', 'Fundamentals', 'Beginner', 'Guide', 'HCM']
