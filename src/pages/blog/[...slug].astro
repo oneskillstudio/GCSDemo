@@ -1,20 +1,339 @@
 ---
-import { type CollectionEntry, getCollection, render } from 'astro:content';
-import BlogPost from '../../layouts/BlogPost.astro';
+import { getCollection } from 'astro:content';
+import BlogLayout from '../../layouts/BlogLayout.astro';
 
+// Get all posts
+const posts = await getCollection('blog');
+
+// Generate static paths for all posts
 export async function getStaticPaths() {
-	const posts = await getCollection('blog');
-	return posts.map((post) => ({
-		params: { slug: post.id },
-		props: post,
-	}));
+  const posts = await getCollection('blog');
+  return posts.map(post => ({
+    params: { slug: post.slug },
+    props: { post }
+  }));
 }
-type Props = CollectionEntry<'blog'>;
 
-const post = Astro.props;
-const { Content } = await render(post);
+const { post } = Astro.props;
+const { Content } = await post.render();
+
+// Get related posts (same category)
+const relatedPosts = posts
+  .filter(p => p.data.category === post.data.category && p.slug !== post.slug)
+  .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime())
+  .slice(0, 3);
 ---
 
-<BlogPost {...post.data}>
-	<Content />
-</BlogPost>
+<BlogLayout title={post.data.title} description={post.data.description}>
+  <article class="blog-post">
+    <!-- POST HEADER -->
+    <header class="post-header">
+      {post.data.image && (
+        <div class="post-hero">
+          <img 
+            src={post.data.image} 
+            alt={post.data.title}
+            onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1200 630%22%3E%3Crect fill=%22%23E8F2F8%22 width=%221200%22 height=%22630%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%22100%22%3E📝%3C/text%3E%3C/svg%3E'"
+          />
+        </div>
+      )}
+      
+      <div class="post-title-section">
+        <span class="post-category">{post.data.category}</span>
+        <h1>{post.data.title}</h1>
+        <p class="post-description">{post.data.description}</p>
+        
+        <div class="post-meta">
+          <span class="post-date">
+            {post.data.pubDate.toLocaleDateString('en-US', { 
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric' 
+            })}
+          </span>
+          <span class="separator">•</span>
+          <span class="read-time">{post.data.readTime} min read</span>
+          <span class="separator">•</span>
+          <span class="author">{post.data.author}</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- POST CONTENT -->
+    <div class="post-content">
+      <Content />
+    </div>
+
+    <!-- TAGS -->
+    {post.data.tags && post.data.tags.length > 0 && (
+      <div class="post-tags">
+        <h3>Tags</h3>
+        <div class="tags-list">
+          {post.data.tags.map(tag => (
+            <span class="tag">{tag}</span>
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- RELATED POSTS -->
+    {relatedPosts.length > 0 && (
+      <section class="related-posts">
+        <h2>Related Articles</h2>
+        <div class="related-grid">
+          {relatedPosts.map(relatedPost => (
+            <a href={`/blog/${relatedPost.slug}`} class="related-card">
+              <h3>{relatedPost.data.title}</h3>
+              <p>{relatedPost.data.description}</p>
+              <span class="read-more">Read Article →</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- CTA -->
+    <section class="post-cta">
+      <h2>Explore More Articles</h2>
+      <p>Discover more Oracle Fusion HCM knowledge in our complete blog.</p>
+      <a href="/blog" class="cta-btn">Browse All Articles</a>
+    </section>
+  </article>
+
+  <style>
+    .blog-post {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .post-hero {
+      width: 100%;
+      height: 400px;
+      overflow: hidden;
+      background: #f0f0f0;
+    }
+
+    .post-hero img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .post-title-section {
+      padding: 2rem;
+    }
+
+    .post-category {
+      display: inline-block;
+      background: #e8f2f8;
+      color: #003b66;
+      padding: 0.35rem 1rem;
+      border-radius: 25px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .post-title-section h1 {
+      font-size: 2.5rem;
+      margin: 0 0 1rem 0;
+      color: #003b66;
+      line-height: 1.2;
+    }
+
+    .post-description {
+      font-size: 1.1rem;
+      color: #666;
+      margin: 0 0 1.5rem 0;
+    }
+
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+      color: #999;
+    }
+
+    .separator {
+      color: #ddd;
+    }
+
+    .author {
+      color: #003b66;
+      font-weight: 600;
+    }
+
+    .post-content {
+      padding: 2rem;
+      line-height: 1.8;
+      color: #333;
+    }
+
+    .post-content :global(h2) {
+      margin: 2rem 0 1rem 0;
+      color: #003b66;
+    }
+
+    .post-content :global(h3) {
+      margin: 1.5rem 0 0.75rem 0;
+      color: #003b66;
+    }
+
+    .post-content :global(p) {
+      margin-bottom: 1rem;
+    }
+
+    .post-content :global(code) {
+      background: #f0f0f0;
+      padding: 0.2rem 0.4rem;
+      border-radius: 3px;
+      font-size: 0.9rem;
+    }
+
+    .post-content :global(pre) {
+      background: #f0f0f0;
+      padding: 1rem;
+      border-radius: 5px;
+      overflow-x: auto;
+      margin: 1rem 0;
+    }
+
+    .post-content :global(a) {
+      color: #0091b8;
+      font-weight: 500;
+    }
+
+    .post-content :global(a:hover) {
+      text-decoration: underline;
+    }
+
+    .post-tags {
+      padding: 2rem;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .post-tags h3 {
+      color: #003b66;
+      margin-bottom: 1rem;
+    }
+
+    .tags-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .tag {
+      display: inline-block;
+      background: #e8f2f8;
+      color: #003b66;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+
+    .related-posts {
+      padding: 2rem;
+      border-top: 1px solid #e0e0e0;
+      background: #f9f9f9;
+    }
+
+    .related-posts h2 {
+      color: #003b66;
+      margin-bottom: 1.5rem;
+    }
+
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .related-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s;
+    }
+
+    .related-card:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .related-card h3 {
+      color: #003b66;
+      margin-bottom: 0.75rem;
+      font-size: 1.1rem;
+    }
+
+    .related-card p {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .read-more {
+      color: #0091b8;
+      font-weight: 600;
+    }
+
+    .post-cta {
+      padding: 3rem 2rem;
+      background: linear-gradient(135deg, #003b66 0%, #0091b8 100%);
+      color: white;
+      text-align: center;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .post-cta h2 {
+      color: white;
+      margin-bottom: 0.5rem;
+    }
+
+    .post-cta p {
+      margin-bottom: 1.5rem;
+      opacity: 0.95;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      background: white;
+      color: #003b66;
+      padding: 0.75rem 2rem;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .cta-btn:hover {
+      background: #f0f0f0;
+    }
+
+    @media (max-width: 768px) {
+      .post-title-section {
+        padding: 1.5rem;
+      }
+
+      .post-title-section h1 {
+        font-size: 1.8rem;
+      }
+
+      .post-content {
+        padding: 1.5rem;
+      }
+
+      .related-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</BlogLayout>
