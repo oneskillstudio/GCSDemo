@@ -4,7 +4,13 @@ description: 'Master advanced Fast Formula development with real-world optimizat
 pubDate: 2024-12-20
 author: 'Vaibhav Chavan'
 category: 'Technical'
-tags: ['Fast Formula', 'Oracle Fusion', 'HCM', 'Development', 'Performance', 'Advanced']
+tags: 
+  - Fast Formula
+  - Oracle Fusion
+  - HCM
+  - Development
+  - Performance
+  - Advanced
 image: '/images/posts/001-fast-formula.jpg'
 readTime: 22
 draft: false
