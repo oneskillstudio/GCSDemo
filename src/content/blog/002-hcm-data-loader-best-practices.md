@@ -4,7 +4,12 @@ description: 'Complete guide to HCM Data Loader including configuration, validat
 pubDate: 2024-12-18
 author: 'Vaibhav Chavan'
 category: 'Technical'
-tags: ['HCM Data Loader', 'Data Migration', 'Oracle Fusion', 'Integration', 'ETL']
+tags: 
+   - HCM Data Loader
+   - Data Migration
+   - Oracle Fusion
+   - Integration
+   - ETL
 image: '/images/posts/002-data-loader.jpg'
 readTime: 24
 draft: false
