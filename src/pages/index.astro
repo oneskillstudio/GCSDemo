@@ -13,15 +13,19 @@ const sortedPosts = allPosts
 // Featured posts (latest 4)
 const featuredPosts = sortedPosts.slice(0, 4);
 
-// Categories
+// Categories - hardcoded, safe
 const categories = [
   { name: 'Technical', icon: '⚙️', description: 'Fast Formula, HDL, HCM Extract, BI Publisher, OTBI and advanced technical topics' },
   { name: 'Functional', icon: '👥', description: 'Core HR, Payroll, Absence, Benefits, Time & Labor, Recruiting configuration' },
   { name: 'Training', icon: '🎓', description: 'Step-by-step tutorials, implementation guides, and best practice documentation' }
 ];
 
-// Get unique tags
-const allTags = [...new Set(sortedPosts.flatMap(post => post.data.tags))];
+// Get unique tags - SAFELY filter undefined values
+const allTags = [...new Set(
+  sortedPosts
+    .flatMap(post => post.data.tags || []) // Default to empty array if undefined
+    .filter(tag => tag) // Remove any undefined/null values
+)];
 
 // Author info
 const author = {
@@ -56,12 +60,12 @@ const author = {
               <div class="featured-image">
                 <img 
                   src={post.data.image || '/images/placeholder.jpg'} 
-                  alt={post.data.title}
+                  alt={post.data.title || 'Article'}
                   onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 200%22%3E%3Crect fill=%22%23E8F2F8%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2248%22%3E📝%3C/text%3E%3C/svg%3E'"
                 />
               </div>
               <div class="featured-content">
-                <span class="featured-category">{post.data.category}</span>
+                {post.data.category && <span class="featured-category">{post.data.category}</span>}
                 <h3>{post.data.title}</h3>
                 <p>{post.data.description}</p>
                 <div class="featured-meta">
@@ -165,14 +169,16 @@ const author = {
       </div>
 
       <!-- Tags -->
-      <div class="sidebar-box">
-        <h3>Topics</h3>
-        <div class="tags">
-          {allTags.map(tag => (
-            <span class="tag">{tag}</span>
-          ))}
+      {allTags.length > 0 && (
+        <div class="sidebar-box">
+          <h3>Topics</h3>
+          <div class="tags">
+            {allTags.map(tag => (
+              <span class="tag">{tag}</span>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </aside>
   </div>
 
