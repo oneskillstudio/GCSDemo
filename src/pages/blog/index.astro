@@ -1,114 +1,235 @@
 ---
-import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
-import BaseHead from '../../components/BaseHead.astro';
-import Footer from '../../components/Footer.astro';
-import FormattedDate from '../../components/FormattedDate.astro';
-import Header from '../../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
+import BlogLayout from '../../layouts/BlogLayout.astro';
 
-const posts = (await getCollection('blog')).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+// Get all blog posts
+const allPosts = await getCollection('blog');
+
+// Sort by date (newest first)
+const posts = allPosts
+  .filter(post => !post.data.draft)
+  .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
+
+// Get unique categories
+const categories = [...new Set(posts.map(post => post.data.category))];
 ---
 
-<!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-		<style>
-			main {
-				width: 960px;
-			}
-			ul {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 2rem;
-				list-style-type: none;
-				margin: 0;
-				padding: 0;
-			}
-			ul li {
-				width: calc(50% - 1rem);
-			}
-			ul li * {
-				text-decoration: none;
-				transition: 0.2s ease;
-			}
-			ul li:first-child {
-				width: 100%;
-				margin-bottom: 1rem;
-				text-align: center;
-			}
-			ul li:first-child img {
-				width: 100%;
-			}
-			ul li:first-child .title {
-				font-size: 2.369rem;
-			}
-			ul li img {
-				margin-bottom: 0.5rem;
-				border-radius: 12px;
-			}
-			ul li a {
-				display: block;
-			}
-			.title {
-				margin: 0;
-				color: rgb(var(--black));
-				line-height: 1;
-			}
-			.date {
-				margin: 0;
-				color: rgb(var(--gray));
-			}
-			ul li a:hover h4,
-			ul li a:hover .date {
-				color: rgb(var(--accent));
-			}
-			ul a:hover img {
-				box-shadow: var(--box-shadow);
-			}
-			@media (max-width: 720px) {
-				ul {
-					gap: 0.5em;
-				}
-				ul li {
-					width: 100%;
-					text-align: center;
-				}
-				ul li:first-child {
-					margin-bottom: 0;
-				}
-				ul li:first-child .title {
-					font-size: 1.563em;
-				}
-			}
-		</style>
-	</head>
-	<body>
-		<Header />
-		<main>
-			<section>
-				<ul>
-					{
-						posts.map((post) => (
-							<li>
-								<a href={`/blog/${post.id}/`}>
-									{post.data.heroImage && (
-										<Image width={720} height={360} src={post.data.heroImage} alt="" />
-									)}
-									<h4 class="title">{post.data.title}</h4>
-									<p class="date">
-										<FormattedDate date={post.data.pubDate} />
-									</p>
-								</a>
-							</li>
-						))
-					}
-				</ul>
-			</section>
-		</main>
-		<Footer />
-	</body>
-</html>
+<BlogLayout title="Blog - All Articles" description="Browse all Oracle Fusion HCM articles">
+  <div class="blog-container">
+    <!-- HEADER -->
+    <section class="blog-header">
+      <h1>Blog</h1>
+      <p>Oracle Fusion HCM Expert Knowledge Base</p>
+    </section>
+
+    <!-- CATEGORY FILTER -->
+    <section class="category-filter">
+      <a href="/blog" class="filter-btn active">All Articles</a>
+      {categories.map(cat => (
+        <a href={`/blog/${cat.toLowerCase()}`} class="filter-btn">
+          {cat}
+        </a>
+      ))}
+    </section>
+
+    <!-- POSTS GRID -->
+    <section class="posts-grid">
+      {posts.length > 0 ? (
+        posts.map(post => (
+          <article class="post-card">
+            <a href={`/blog/${post.slug}`} class="post-link">
+              {post.data.image && (
+                <div class="post-image">
+                  <img 
+                    src={post.data.image} 
+                    alt={post.data.title}
+                    onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 200%22%3E%3Crect fill=%22%23E8F2F8%22 width=%22400%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2248%22%3E📝%3C/text%3E%3C/svg%3E'"
+                  />
+                </div>
+              )}
+              <div class="post-content">
+                <span class="post-category">{post.data.category}</span>
+                <h2>{post.data.title}</h2>
+                <p>{post.data.description}</p>
+                <div class="post-meta">
+                  <span class="post-date">{post.data.pubDate.toLocaleDateString()}</span>
+                  <span class="read-time">{post.data.readTime} min read</span>
+                </div>
+              </div>
+            </a>
+          </article>
+        ))
+      ) : (
+        <p class="no-posts">No posts found.</p>
+      )}
+    </section>
+  </div>
+
+  <style>
+    .blog-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .blog-header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding: 2rem 0;
+    }
+
+    .blog-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .blog-header p {
+      font-size: 1.1rem;
+      color: #666;
+    }
+
+    /* CATEGORY FILTER */
+    .category-filter {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 0.75rem 1.5rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 25px;
+      background: white;
+      color: #666;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+
+    .filter-btn:hover {
+      border-color: #0091b8;
+      color: #0091b8;
+    }
+
+    .filter-btn.active {
+      background: #003b66;
+      color: white;
+      border-color: #003b66;
+    }
+
+    /* POSTS GRID */
+    .posts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .post-card {
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #e0e0e0;
+      transition: all 0.3s;
+    }
+
+    .post-card:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transform: translateY(-4px);
+    }
+
+    .post-link {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .post-image {
+      width: 100%;
+      height: 180px;
+      overflow: hidden;
+      background: #f0f0f0;
+    }
+
+    .post-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+
+    .post-card:hover .post-image img {
+      transform: scale(1.05);
+    }
+
+    .post-content {
+      padding: 1.5rem;
+    }
+
+    .post-category {
+      display: inline-block;
+      background: #e8f2f8;
+      color: #003b66;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .post-card h2 {
+      font-size: 1.3rem;
+      margin: 0.5rem 0;
+      color: #003b66;
+      line-height: 1.4;
+    }
+
+    .post-card p {
+      color: #666;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin: 0.75rem 0;
+    }
+
+    .post-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #f0f0f0;
+      font-size: 0.85rem;
+      color: #999;
+    }
+
+    .read-time {
+      color: #0091b8;
+      font-weight: 500;
+    }
+
+    .no-posts {
+      text-align: center;
+      color: #999;
+      padding: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .posts-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .blog-header h1 {
+        font-size: 2rem;
+      }
+
+      .category-filter {
+        gap: 0.5rem;
+      }
+
+      .filter-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</BlogLayout>
